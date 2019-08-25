@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>OAuth2.0</title>
+  <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+  <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <div id="app" class="container p-2">
+    <div class="row justify-content-center">
+
+      <span class="btn btn-primary btn-sm" @click="loginWithGithub">With Github</span>
+    </div>
+  </div>
+
+  <script>
+    const token = Date.now()
+
+    new Vue({
+      data: {},
+      methods: {
+        loginWithGithub(ev) {
+          const href = `https://github.com/login/oauth/authorize?${
+            json2param({
+              client_id: '613cc46b1f5d7af0938f',
+              redirect_uri: 'http://localhost:4000',
+              login: 'caoxiemeihao',
+              scope: 'repo',
+              state: token, // return via github, usered for step 2 validate
+              allow_signup: 'true'
+            })}`
+          window.location.href = href
+        }
+      },
+      mounted() { }
+    }).$mount('#app')
+
+    function json2param(json) {
+      let param = ''
+
+      Object.keys(json).forEach(k => {
+        param += `&${k}=${json[k]}`
+      })
+
+      return param.substr(1)
+    }
+
+    function param2json(param = window.location.search) {
+      let json = {}
+
+      param.replace('?', '').split('&').forEach(item => {
+        const arr = item.split('=')
+
+        json[arr[0]] = arr[1]
+      })
+
+      return Object.keys(json).length ? json : null
+    }
+
+    const param = param2json()
+
+    if (param && param.code) {
+      console.log(param)
+      window.fetch('http://localhost:4000', {
+        method: 'POST',
+        body: JSON.stringify({
+          cmd: 'oauth-code',
+          data: param,
+        })
+      })
+    }
+
+  </script>
+</body>
+
+</html>
