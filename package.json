@@ -1,0 +1,11 @@
+{
+  "name": "OAuth2-github",
+  "version": "1.0.0",
+  "main": "main.js",
+  "author": "草鞋没号 <308487730@qq.com>",
+  "description": "Learn OAuth2.0",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "license": "MIT"
+}
